@@ -1,13 +1,14 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthController } from 'src/auth/auth.controller';
-import { AuthService } from 'src/auth/auth.service';
-
-import { UsersModule } from 'src/users/users.module';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { UsersModule } from '../users/users.module';
+import { GoogleStrategy } from './google.strategy';
+import { GoogleAuthController } from './google-auth.controller';
 
 @Module({
-  providers: [AuthService],
-  controllers: [AuthController],
+  providers: [AuthService, GoogleStrategy],
+  controllers: [AuthController, GoogleAuthController],
   imports: [
     forwardRef(() => UsersModule),
     JwtModule.register({
