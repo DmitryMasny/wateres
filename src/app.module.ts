@@ -12,7 +12,7 @@ import { PostsModule } from './posts/posts.module';
 import { Post } from './posts/posts.model';
 import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { resolve } from 'path';
+import { join } from 'path';
 
 @Module({
   controllers: [],
@@ -22,7 +22,7 @@ import { resolve } from 'path';
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
     ServeStaticModule.forRoot({
-      rootPath: resolve(__dirname, 'static '),
+      rootPath: join(__dirname, '..', 'static'),
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',

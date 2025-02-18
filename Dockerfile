@@ -1,8 +1,11 @@
 # Используем актуальную версию Node
-FROM node:19-alpine
+FROM node:20.11-alpine
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
+
+# Обновляем npm до стабильной версии
+RUN npm install -g npm@10.5.0
 
 # Копируем package.json и package-lock.json
 COPY package*.json ./
@@ -17,5 +20,4 @@ COPY . ./
 RUN npm run build
 
 # Запуск приложения
-CMD npm run dev
-# CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start"]

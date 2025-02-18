@@ -2,16 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { User } from 'src/users/user.model';
 
-interface PostCreationAttrs {
+export interface PostCreationAttrs {
   title: string;
   content: string;
   userId: number;
   image: string;
+  published?: boolean;
 }
 
 @Table({ tableName: 'posts' })
 export class Post extends Model<Post, PostCreationAttrs> {
-  @ApiProperty({ example: '1', description: 'id' })
+  @ApiProperty({ example: '1', description: 'Уникальный идентификатор' })
   @Column({
     type: DataType.INTEGER,
     unique: true,
@@ -20,43 +21,40 @@ export class Post extends Model<Post, PostCreationAttrs> {
   })
   id: number;
 
-  @ApiProperty({ example: 'Заголовок поста' })
+  @ApiProperty({ example: 'Заголовок поста', description: 'Заголовок поста' })
   @Column({
     type: DataType.STRING,
-    unique: true,
     allowNull: false,
   })
   title: string;
 
-  @ApiProperty({ example: 'Содержание поста' })
+  @ApiProperty({ example: 'Содержание поста', description: 'Текст поста' })
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   content: string;
 
-  @ApiProperty({ example: 'изображение' })
+  @ApiProperty({ example: 'image.jpg', description: 'Имя файла изображения' })
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
   image: string;
 
+  @ApiProperty({ example: '1', description: 'ID автора поста' })
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER })
   userId: number;
 
-  @ApiProperty({
-    example: {
-      id: 1,
-      email: 'user@example.com',
-      firstName: 'John',
-      lastName: 'Doe',
-      image: 'https://example.com/image.jpg',
-      createdAt: '2024-01-01T00:00:00.000Z',
-    },
-    description: 'автор поста',
-  })
+  @ApiProperty({ type: () => User, description: 'Автор поста' })
   @BelongsTo(() => User)
   author: User;
+
+  @ApiProperty({ example: true, description: 'Опубликован ли пост' })
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  published: boolean;
 }
