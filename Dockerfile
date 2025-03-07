@@ -11,7 +11,8 @@ RUN npm install -g npm@10.5.0
 COPY package*.json ./
 
 # Устанавливаем зависимости
-RUN npm install --legacy-peer-deps
+# RUN npm install --legacy-peer-deps
+RUN npm install
 
 # Копируем весь код проекта
 COPY . ./

@@ -2,11 +2,12 @@ import { Body, Controller, Post, Put, Delete, Param, ParseIntPipe, UploadedFile,
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { PostsService } from './posts.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { Post as PostModel } from './posts.model';
 
 @ApiTags('Посты')
 @Controller('posts')
+@ApiBearerAuth('JWT-auth')
 export class PostsController {
   constructor(private postsService: PostsService) {}
 

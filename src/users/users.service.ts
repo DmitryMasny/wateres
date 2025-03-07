@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { RolesService } from 'src/roles/roles.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/user.model';
 import { AddRoleDto } from './dto/add-role.dto';
 import { Op } from 'sequelize';
+
 // import { BanUserDto } from './dto/ban-user.dto';
 
 @Injectable()
@@ -18,6 +19,9 @@ export class UsersService {
     const user = await this.UserRepository.create(dto);
 
     const role = await this.roleService.getRoleByValue('USER');
+    if (!role) {
+      throw new HttpException('Регистрация закрыта (Ошибка роли)', HttpStatus.NOT_FOUND);
+    }
     await user.$set('roles', [role.id]);
     user.roles = [role];
 
@@ -55,17 +59,6 @@ export class UsersService {
     throw new HttpException('Пользователь или роль не найдены', HttpStatus.NOT_FOUND);
   }
 
-  // async ban(dto: BanUserDto) {
-  //   const user = await this.UserRepository.findByPk(dto.userId);
-  //   if (!user) {
-  //     throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
-  //   }
-  //   // user.banned = true;
-  //   // user.banReason = dto.banReason;
-  //   await user.save();
-  //   return user;
-  // }
-
   async findOrCreateGoogleUser(profile: any) {
     const user = await this.UserRepository.findOne({
       where: {
@@ -96,4 +89,25 @@ export class UsersService {
 
     return newUser;
   }
+
+  async deleteUser(id: number) {
+    const user = await this.UserRepository.findByPk(id);
+
+    if (!user) {
+      throw new UnauthorizedException('Неверный userId');
+    }
+
+    await user.destroy();
+  }
+
+  // async ban(dto: BanUserDto) {
+  //   const user = await this.UserRepository.findByPk(dto.userId);
+  //   if (!user) {
+  //     throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
+  //   }
+  //   // user.banned = true;
+  //   // user.banReason = dto.banReason;
+  //   await user.save();
+  //   return user;
+  // }
 }

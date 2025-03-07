@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Get, UseGuards, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, Delete, UseGuards, Param } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { Roles } from 'src/auth/roles-auth.decorator';
@@ -46,6 +46,13 @@ export class UsersController {
   @Post('/role')
   addRole(@Body() dto: AddRoleDto) {
     return this.usersService.addRole(dto);
+  }
+
+  @ApiOperation({ summary: 'Удаление пользователя' })
+  @ApiResponse({ status: 200 })
+  @Delete('/:id')
+  delete(@Param('id') id: number) {
+    return this.usersService.deleteUser(id);
   }
 
   // @ApiOperation({ summary: 'Забанить пользователя' })
